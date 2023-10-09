@@ -104,8 +104,8 @@ class Risk(models.Model):
      RAGStatus = models.CharField(max_length=6, choices=color_choice)
 
 
-     def __str__(self):
-          return self.risk_id
+    #  def __str__(self):
+    #       return self.risk_id
      
 
 class Issue(models.Model):
@@ -123,8 +123,8 @@ class Issue(models.Model):
      RAGStatus = models.CharField(max_length=6, choices=color_choice)
 
 
-     def __str__(self):
-          return self.issue_id
+    #  def __str__(self):
+    #       return self.issue_id
      
 
 
@@ -148,14 +148,14 @@ class Dependency(models.Model):
 class Phase(models.Model):
      phase_id = models.AutoField(primary_key=True)
      timeline_id = models.ForeignKey(PhaseWiseTimeline, on_delete=models.CASCADE)
-     phase_choice = (
-          (),
-          (),
-          (),
-          (),
-          ()
-     )
-     Phase_name = models.CharField(max_length=10, choices=phase_choice)
+     #phase_choice = (
+      #    (),
+      #    (),
+      #    (),
+      #    (),
+      #    ()
+     #)
+     #Phase_name = models.CharField(max_length=10, choices=phase_choice)
      planned_start_date = models.DateField()
      planned_end_date = models.DateField()
      revised_end_date = models.DateField()
