@@ -7,7 +7,7 @@ from account.serializers import (
     UserProfileSerializer,
     UserChangePasswordSerializer,
     SendPasswordResetEmailSerializer,
-    # UserPasswordResetSerializer,
+    UserPasswordResetSerializer,
 )
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
@@ -78,9 +78,9 @@ class SendPasswordResetEmailView(APIView):
             status=status.HTTP_200_OK,)
 
 
-# class UserPasswordResetView(APIView):
-#     renderer_classes = [UserRenderer]
-#     def post(self, request, uid, token, format=None):
-#         serializer = UserPasswordResetSerializer(data=request.data, context={"uid": uid, "token": token})
-#         serializer.is_valid(raise_exception=True)
-#         return Response({"msg": "Password reset Successfully"}, status=status.HTTP_200_OK)
+class UserPasswordResetView(APIView):
+    renderer_classes = [UserRenderer]
+    def post(self, request, uid, token, format=None):
+        serializer = UserPasswordResetSerializer(data=request.data, context={"uid": uid, "token": token})
+        serializer.is_valid(raise_exception=True)
+        return Response({"msg": "Password reset Successfully"}, status=status.HTTP_200_OK)
