@@ -38,3 +38,38 @@ class PhaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Phase
         fields = '__all__'
+
+
+class TaskToDoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model =TaskToDo
+        fields = '__all__'
+
+
+class AccomplishmentSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Accomplishment
+        fields = '__all__'
+
+
+class RiskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Risk
+        fields = '__all__'
+
+
+class IssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = '__all__'
+
+class AssumptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assumption
+        fields = '__all__'
+
+
+class DependencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dependency
+        fields = '__all__'

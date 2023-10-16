@@ -4,36 +4,23 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import mixins
-from rest_framework import generics
 
 from .models import *
 from .serializers import *
+from .utils import *
 
 
-class ProjectView(APIView):
-    def get(self, request):
-        # result = Project.objects.filter(user_id=request.user.user_id)
-        result = Project.objects.all()
-        projectserializer = ProjectSerializer(result, many=True)
-        return Response(projectserializer.data, status=status.HTTP_200_OK)
-    
+class ProjectView(AllViewsMixin, APIView):
+    model = Project
+    serializer = ProjectSerializer
 
-    def post(self, request):
-        data = request.data
-        projectserializer = ProjectSerializer(data=data)
-        if projectserializer.is_valid():
-            projectserializer.save()
-            return Response(projectserializer.data, status=status.HTTP_201_CREATED)
-        return Response(projectserializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
     def put(self, request, format=None):
         project = Project.objects.get(project_id=request.data["project_id"])
         projectserializer = ProjectSerializer(project, data=request.data)
         if projectserializer.is_valid():
             projectserializer.save()
-            return Response(projectserializer.data)
+            return Response(projectserializer.data, status=status.HTTP_200_OK)
         return Response(projectserializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -45,38 +32,20 @@ class ProjectView(APIView):
 
 
 
-class AccountView(APIView):
-    def get(self, request):
-        # result = Account.objects.filter(user_id=request.user.user_id)
-        result = Account.objects.all()
-        accountserializer = AccountSerializer(result, many=True)
-        return Response(accountserializer.data, status=status.HTTP_200_OK)
-    
-
-    def post(self, request):
-        data = request.data
-        accountserializer = AccountSerializer(data=data)
-        if accountserializer.is_valid():
-            accountserializer.save()
-            return Response(accountserializer.data, status=status.HTTP_201_CREATED)
-        return Response(accountserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class AccountView(AllViewsMixin, APIView):
+    model = Account
+    serializer = AccountSerializer
 
 
 
-class WeeklyReportView(APIView):
-    def get(self, request):
-        result = WeeklyReport.objects.all()
-        weeklyreportserializer = WeeklyReportSerializer(result, many=True)
-        return Response(weeklyreportserializer.data, status=status.HTTP_200_OK)
-    
+class WeeklyReportView(AllViewsMixin, APIView):
+    model = WeeklyReport
+    serializer = WeeklyReportSerializer
 
-    def post(self, request):
-        data = request.data
-        weeklyreportserializer = WeeklyReportSerializer(data=data)
-        if weeklyreportserializer.is_valid():
-            weeklyreportserializer.save()
-            return Response(weeklyreportserializer.data, status=status.HTTP_201_CREATED)
-        return Response(weeklyreportserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def get(self, request):
+    #     result = WeeklyReport.objects.all()
+    #     weeklyreportserializer = WeeklyReportSerializer(result, many=True)
+    #     return Response(weeklyreportserializer.data, status=status.HTTP_200_OK)
     
 
     def put(self, request, format=None):
@@ -95,20 +64,14 @@ class WeeklyReportView(APIView):
     
 
 
-class ProjectStatusView(APIView):
-    def get(self, request):
-        result = ProjectStatus.objects.all()
-        projectstatusserializer = ProjectStatusSerializer(result, many=True)
-        return Response(projectstatusserializer.data, status=status.HTTP_200_OK)
-    
+class ProjectStatusView(AllViewsMixin, APIView):
+    model = ProjectStatus
+    serializer = ProjectStatusSerializer
 
-    def post(self, request):
-        data = request.data
-        projectstatusserializer = ProjectStatusSerializer(data=data)
-        if projectstatusserializer.is_valid():
-            projectstatusserializer.save()
-            return Response(projectstatusserializer.data, status=status.HTTP_201_CREATED)
-        return Response(projectstatusserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def get(self, request):
+    #     result = ProjectStatus.objects.all()
+    #     projectstatusserializer = ProjectStatusSerializer(result, many=True)
+    #     return Response(projectstatusserializer.data, status=status.HTTP_200_OK)
     
 
     def put(self, request, format=None):
@@ -131,19 +94,15 @@ class ProjectStatusView(APIView):
     
 
 
-class PhaseWiseTimelineView(APIView):
-    def get(self, request):
-        result = PhaseWiseTimeline.objects.filter(timeline_id = 1)
-        phasewisetimelineserializer = PhaseWiseTimelineSerializer(result, many=True)
-        return Response(phasewisetimelineserializer.data, status=status.HTTP_200_OK)
+class PhaseWiseTimelineView(AllViewsMixin, APIView):
+    model = PhaseWiseTimeline
+    serializer = PhaseWiseTimelineSerializer
+
+    # def get(self, request):
+    #     result = PhaseWiseTimeline.objects.all()
+    #     phasewisetimelineserializer = PhaseWiseTimelineSerializer(result, many=True)
+    #     return Response(phasewisetimelineserializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
-        data = request.data
-        phaseWisetimelineserializer = PhaseWiseTimelineSerializer(data=data)
-        if phaseWisetimelineserializer.is_valid():
-            phaseWisetimelineserializer.save()
-            return Response(phaseWisetimelineserializer.data, status=status.HTTP_201_CREATED)
-        return Response(phaseWisetimelineserializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # def put(self, request, format=None):
     #     phasewisetimeline = PhaseWiseTimeline.objects.get(timeline_id = 1)
@@ -161,22 +120,18 @@ class PhaseWiseTimelineView(APIView):
     
 
 
-class PhaseView(APIView):
-    def get(self, request):
-        result = Phase.objects.all()
-        phaseserializer = PhaseSerializer(result, many=True)
-        return Response(phaseserializer.data, status=status.HTTP_200_OK)
+class PhaseView(AllViewsMixin, APIView):
+    model = Phase
+    serializer = PhaseSerializer
+
+    # def get(self, request):
+    #     result = Phase.objects.all()
+    #     phaseserializer = PhaseSerializer(result, many=True)
+    #     return Response(phaseserializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
-        data = request.data
-        phaseserializer = PhaseSerializer(data=data, many=True)
-        if phaseserializer.is_valid():
-            phaseserializer.save()
-            return Response(phaseserializer.data, status=status.HTTP_201_CREATED)
-        return Response(phaseserializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, format=None):
-        phase = Phase.objects.get(timeline_id = 1)
+        phase = Phase.objects.filter(timeline_id=request.data[0]["timeline_id"])
         phaseserializer = PhaseSerializer(phase, data=request.data)
         if phaseserializer.is_valid():
             phaseserializer.save()
@@ -185,6 +140,157 @@ class PhaseView(APIView):
     
 
     def delete(self, request, format=None):
-        phase = Phase.objects.get(timeline_id = 1)
+        phase = Phase.objects.filter(timeline_id=request.data["timeline_id"])
         phase.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+class TaskToDoView(AllViewsMixin, APIView):
+    model = TaskToDo
+    serializer = TaskToDoSerializers
+
+    # def get(self,request):
+    #     result = TaskToDo.objects.all()
+    #     serializers = TaskToDoSerializers(result,many = True)
+    #     return Response(serializers.data)
+
+    
+    def patch(self, request):
+        result = TaskToDo.objects.get(TaskID=request.data["TaskID"])
+        serializer = TaskToDoSerializers(result, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data})
+        else:
+            return Response({"status": "error", "data": serializer.errors})
+             
+
+    def delete(self, request):
+        try:
+            result =TaskToDo.objects.filter(TaskID=request.data["TaskID"])
+            result.delete()
+            return Response({"status": "success", "message": "Record Deleted"})
+        except Exception as e:
+            return Response({"status": "error", "meassage": e})
+        
+ 
+        
+class AccomplishmentView(AllViewsMixin, APIView):
+    model = Accomplishment
+    serializer = AccomplishmentSerializers
+
+    # def get(self,request):
+    #     result = Accomplishment.objects.all()
+    #     serializers = AccomplishmentSerializers(result,many = True)
+    #     return Response(serializers.data)
+
+    
+    def patch(self,request):
+        result = Accomplishment.objects.get(AccomplishmentID=request.data["AccomplishmentID"])
+        serializer = AccomplishmentSerializers(result, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data})
+        else:
+            return Response({"status": "error", "data": serializer.errors})
+        
+    def delete(self, request):
+        try:
+            result =Accomplishment.objects.filter(AccomplishmentID=request.data["AccomplishmentID"])
+            result.delete()
+            return Response({"status": "success", "message": "Record Deleted"})
+        except Exception as e:
+            return Response({"status": "error", "meassage": e})
+        
+
+class RiskView(APIView):
+    # def get(self, request):
+    #     result = Risk.objects.all()
+    #     riskserializer = RiskSerializer(result, many=True)
+    #     return Response(riskserializer.data, status=status.HTTP_200_OK)
+    
+
+    def put(self, request, format=None):
+        risk = Risk.objects.get(risk_id=request.data["risk_id"])
+        serializer = RiskSerializer(risk, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, format=None):
+        risk = Risk.objects.get(risk_id=request.data["risk_id"])
+        risk.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+class IssueView(APIView):
+    # def get(self, request):
+    #     # result = Account.objects.filter(user_id=request.user.user_id)
+    #     result = Issue.objects.all()
+    #     issueserializer = IssueSerializer(result, many=True)
+    #     return Response(issueserializer.data, status=status.HTTP_200_OK)
+    
+    
+    def put(self, request, format=None):
+        issue = Issue.objects.get(issue_id=request.data["issue_id"])
+        serializer = IssueSerializer(issue, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, format=None):
+        issue = Issue.objects.get(issue_id=request.data["issue_id"])
+        issue.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+class AssumptionView(APIView):
+    # def get(self, request):
+    #     result = Assumption.objects.all()
+    #     assumptionsserializer = AssumptionSerializer(result, many=True)
+    #     return Response(assumptionsserializer.data, status=status.HTTP_200_OK)
+    
+
+    def put(self, request, format=None):
+        assumption = Assumption.objects.get(assumption_id=request.data["assumption_id"])
+        serializer = AssumptionSerializer(assumption, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, format=None):
+        assumption = Assumption.objects.get(assumption_id=request.data["assumption_id"])
+        assumption.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class DependencyView(APIView):
+    # def get(self, request):
+    #     result = Dependency.objects.all()
+    #     dependencyserializer = DependencySerializer(result, many=True)
+    #     return Response(dependencyserializer.data, status=status.HTTP_200_OK)
+    
+    
+    def put(self, request, format=None):
+        dependancy = Dependency.objects.get(dependency_id=request.data["dependency_id"])
+        serializer = DependencySerializer(dependancy, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, format=None):
+        dependancy = Dependency.objects.get(dependency_id=request.data["dependency_id"])
+        dependancy.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

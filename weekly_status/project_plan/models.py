@@ -85,3 +85,84 @@ class Phase(models.Model):
     )
      status = models.CharField(max_length=10,choices=color_choice)
      remark = models.TextField()
+
+
+class TaskToDo(models.Model):
+    TaskID = models.IntegerField()
+    ReportID = models.ForeignKey(WeeklyReport,on_delete=models.CASCADE,null=False)
+    Description = models.TextField()
+    Assignee = models.CharField(max_length=50)
+
+
+class Accomplishment(models.Model):
+    AccomplishmentID = models.IntegerField()
+    ReportID = models.ForeignKey(WeeklyReport,on_delete=models.CASCADE,null=False)
+    Description = models.TextField()
+
+
+class Assumption(models.Model):
+    assumption_id = models.AutoField(primary_key=True)
+    report_id = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
+    assumption = models.TextField()
+
+    def __str__(self):
+            return self.assumption
+    
+
+class Risk(models.Model):
+     risk_id = models.AutoField(primary_key=True)
+     report_id = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
+     risk_description = models.TextField()
+     severity = models.CharField(max_length=200)
+     complexity = models.CharField(max_length=200)
+     impact = models.CharField(max_length=200)
+     mitigation_plan = models.CharField(max_length=200)
+     color_choice = (
+        ('R', 'Red'),
+        ('A', 'Amber'),
+        ('G', 'Green')
+    )
+     RAGStatus = models.CharField(max_length=6, choices=color_choice)
+
+
+     def __str__(self):
+          return self.risk_description
+     
+
+class Issue(models.Model):
+     issue_id = models.AutoField(primary_key=True)
+     report_id = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
+     issue_description = models.TextField()
+     severity = models.CharField(max_length=200)
+     complexity = models.CharField(max_length=200)
+     impact = models.CharField(max_length=200)
+     responsible_party = models.CharField(max_length=200)
+     color_choice = (
+        ('R', 'Red'),
+        ('A', 'Amber'),
+        ('G', 'Green')
+    )
+     RAGStatus = models.CharField(max_length=6, choices=color_choice)
+
+
+     def __str__(self):
+          return self.issue_description
+     
+
+
+class Dependency(models.Model):
+     dependency_id = models.AutoField(primary_key=True)
+     report_id = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
+     dependency_description = models.CharField(max_length=200)
+     target_completion_date = models.DateField()
+     responsible_party = models.CharField(max_length=200)
+     color_choice = (
+        ('R', 'Red'),
+        ('A', 'Amber'),
+        ('G', 'Green')
+    )
+     RAGStatus = models.CharField(max_length=6, choices=color_choice)
+
+
+     def __str__(self):
+          return self.dependency_description
