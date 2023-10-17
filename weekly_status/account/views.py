@@ -8,6 +8,7 @@ from account.serializers import (
     UserChangePasswordSerializer,
     SendPasswordResetEmailSerializer,
     UserPasswordResetSerializer,
+    UserLogoutSerializer,
 )
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
@@ -84,3 +85,16 @@ class UserPasswordResetView(APIView):
         serializer = UserPasswordResetSerializer(data=request.data, context={"uid": uid, "token": token})
         serializer.is_valid(raise_exception=True)
         return Response({"msg": "Password reset Successfully"}, status=status.HTTP_200_OK)
+    
+class UserLogoutView(APIView):
+    renderer_classes = [UserRenderer]
+    def post(self, request, format=None):
+        try:
+            serializer = UserLogoutSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            token = get_tokens_for_user(user)
+            token.blacklist()
+            return Response({"msg": "Logout Successful"}, status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({"error": "Invalid Token"}, status=status.HTTP_400_BAD_REQUEST)

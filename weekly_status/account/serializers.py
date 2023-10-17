@@ -104,3 +104,5 @@ class UserPasswordResetSerializer(serializers.Serializer):
             PasswordResetTokenGenerator().check_token(user, token)
             raise ValueError("Token is Valid or Expired")
         
+class UserLogoutSerializer(serializers.ModelSerializer):
+    pass
