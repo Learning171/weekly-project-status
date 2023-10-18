@@ -7,7 +7,18 @@ from rest_framework import status
 
 from .models import *
 from .serializers import *
-from .utils import *
+
+class AllViewsMixin:
+    model = None
+    serializer = None
+
+    def post(self, request):
+        data = request.data
+        serializer = self.serializer(data=data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'status': 'error', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectView(AllViewsMixin, APIView):
