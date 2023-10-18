@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_list_or_404
 from django.http import HttpResponse
 
 from rest_framework.views import APIView
@@ -7,22 +8,37 @@ from rest_framework import status
 
 from .models import *
 from .serializers import *
-from .utils import *
 
 
-class ProjectView(AllViewsMixin, APIView):
+class AllPostsMixin:
+    model = None
+    serializer = None
+
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = self.serializer(data=data, many=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({'status': 'error', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProjectView(AllPostsMixin, APIView):
     model = Project
     serializer = ProjectSerializer
 
     def get(self, request):
         try:
             result = Project.objects.filter(user_id=request.user.id)
-            serializer = self.serializer(result, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            projectserializer = ProjectSerializer(result, many=True)
+            return Response(projectserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-
-
+        
+    
     def put(self, request, format=None):
         try:
             project = Project.objects.get(
@@ -38,11 +54,11 @@ class ProjectView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             project = Project.objects.get(
                 user_id=request.user.id,
-                id=request.data["project_id"]
+                id=pk
             )
             project.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -51,32 +67,32 @@ class ProjectView(AllViewsMixin, APIView):
 
 
 class ProjectDetailView(APIView):
-    def get(self, request):
+    def get(self, request, pk):
         try:
             result = Project.objects.get(
                 user_id=request.user.id,
-                id=request.data["project_id"]
+                id=pk
             )
-            serializer = self.serializer(result)
+            serializer = ProjectSerializer(result)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-class ProjectWeeklyReportView(AllViewsMixin, APIView):
+class ProjectWeeklyReportView(AllPostsMixin, APIView):
     model = WeeklyReport
     serializer = WeeklyReportSerializer
 
-    def get(self, request):
+    def get(self, request, pk):
         try:
             result = WeeklyReport.objects.filter(
-                project_id=request.data["project_id"]
+                project_id=pk
             )
             weeklyreportserializer = WeeklyReportSerializer(result, many=True)
             return Response(weeklyreportserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-    
+        
 
     def put(self, request, format=None):
         try:
@@ -93,10 +109,10 @@ class ProjectWeeklyReportView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             weeklyreport = WeeklyReport.objects.get(
-                id=request.data["report_id"]
+                id=pk
             )
             weeklyreport.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -105,9 +121,6 @@ class ProjectWeeklyReportView(AllViewsMixin, APIView):
     
 
 class AllWeeklyReportView(APIView):
-    model = WeeklyReport
-    serializer = WeeklyReportSerializer
-
     def get(self, request):
         try:
             user_projects = Project.objects.filter(user_id=request.user.id)
@@ -119,21 +132,21 @@ class AllWeeklyReportView(APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class ProjectStatusView(AllViewsMixin, APIView):
+class ProjectStatusView(AllPostsMixin, APIView):
     model = ProjectStatus
     serializer = ProjectStatusSerializer
 
-    def get(self, request):
+    def get(self, request, pk):
         try:
             result = ProjectStatus.objects.filter(
-                report=request.data["report_id"]
+                report_id=pk
             )
             projectstatusserializer = ProjectStatusSerializer(result, many=True)
             return Response(projectstatusserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+        
     
-
     def put(self, request, format=None):
         try:
             projectstatus = ProjectStatus.objects.get(
@@ -149,10 +162,10 @@ class ProjectStatusView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             projectstatus = ProjectStatus.objects.get(
-                id=request.data["status_id"]
+                id=pk
             )
             projectstatus.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -161,22 +174,21 @@ class ProjectStatusView(AllViewsMixin, APIView):
     
 
 
-class PhaseWiseTimelineView(AllViewsMixin, APIView):
+class PhaseWiseTimelineView(AllPostsMixin, APIView):
     model = PhaseWiseTimeline
     serializer = PhaseWiseTimelineSerializer
 
-    def get(self, request):
+    def get(self, request, pk):
         try:
             result = PhaseWiseTimeline.objects.filter(
-                report_id=request.data["report_id"],
-                id=request.data["timeline_id"]
+                id=pk
             )
             phasewisetimelineserializer = PhaseWiseTimelineSerializer(result, many=True)
             return Response(phasewisetimelineserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-    
-    
+        
+
     def put(self, request, format=None):
         try:
             phasewisetimeline = PhaseWiseTimeline.objects.get(
@@ -193,10 +205,10 @@ class PhaseWiseTimelineView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             phasewisetimeline = PhaseWiseTimeline.objects.get(
-                id=request.data["timeline_id"]
+                id=pk
             )
             phasewisetimeline.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -205,24 +217,21 @@ class PhaseWiseTimelineView(AllViewsMixin, APIView):
     
 
 
-class PhaseView(AllViewsMixin, APIView):
+class PhaseView(AllPostsMixin, APIView):
     model = Phase
     serializer = PhaseSerializer
 
-    def get(self, request):
+    def get(self, request, pk):
         try:
             result = Phase.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                timeline_id=request.data["timeline_id"]
+                timeline_id=pk
             )
             phaseserializer = PhaseSerializer(result, many=True)
             return Response(phaseserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-    
-    
+        
+
     def put(self, request, format=None):
         try:
             phase = Phase.objects.get(
@@ -241,14 +250,10 @@ class PhaseView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
-            phase = Phase.objects.get(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                timeline_id=request.data["timeline_id"],
-                phase_name=request.data["phase_name"]
+            phase = Phase.objects.filter(
+                timeline_id=pk
             )
             phase.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -257,23 +262,21 @@ class PhaseView(AllViewsMixin, APIView):
     
 
 
-class TaskToDoView(AllViewsMixin, APIView):
+class TaskToDoView(AllPostsMixin, APIView):
     model = TaskToDo
-    serializer = TaskToDoSerializers
+    serializer = TaskToDoSerializer
 
-    def get(self,request):
+    def get(self, request, pk):
         try:
             result = TaskToDo.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+                report_id=pk
             )
-            serializers = TaskToDoSerializers(result,many = True)
-            return Response(serializers.data)
+            tasktodoserializer = TaskToDoSerializer(result, many = True)
+            return Response(tasktodoserializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+        
 
-    
     def patch(self, request):
         try:
             result = TaskToDo.objects.get(
@@ -282,19 +285,19 @@ class TaskToDoView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 id=request.data["tasktodo_id"]
             )
-            serializer = TaskToDoSerializers(result, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"status": "success", "data": serializer.data})
-            return Response({"status": "error", "data": serializer.errors})
+            tasktodoserializer = TaskToDoSerializer(result, data=request.data, partial=True)
+            if tasktodoserializer.is_valid():
+                tasktodoserializer.save()
+                return Response({"status": "success", "data": tasktodoserializer.data})
+            return Response({"status": "error", "data": tasktodoserializer.errors})
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
              
 
-    def delete(self, request):
+    def delete(self, request, pk):
         try:
             result =TaskToDo.objects.get(
-                id=request.data["tasktodo_id"]
+                id=pk
             )
             result.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -303,21 +306,20 @@ class TaskToDoView(AllViewsMixin, APIView):
         
  
         
-class AccomplishmentView(AllViewsMixin, APIView):
+class AccomplishmentView(AllPostsMixin, APIView):
     model = Accomplishment
-    serializer = AccomplishmentSerializers
+    serializer = AccomplishmentSerializer
 
-    def get(self,request):
+    def get(self, request, pk):
         try:
             result = Accomplishment.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+                report_id=pk
             )
-            serializers = AccomplishmentSerializers(result,many = True)
+            accomplishmentserializers = AccomplishmentSerializer(result,many = True)
             return Response(serializers.data)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+        
 
     def patch(self,request):
         try:
@@ -327,43 +329,39 @@ class AccomplishmentView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 accomplishment_id=request.data["accomplishment_id"]
             )
-            serializer = AccomplishmentSerializers(result, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"status": "success", "data": serializer.data})
-            return Response({"status": "error", "data": serializer.errors})
+            accomplishmentserializers = AccomplishmentSerializer(result, data=request.data, partial=True)
+            if accomplishmentserializers.is_valid():
+                accomplishmentserializers.save()
+                return Response({"status": "success", "data": accomplishmentserializers.data})
+            return Response({"status": "error", "data": accomplishmentserializers.errors})
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
         
-    def delete(self, request):
+    def delete(self, request, pk):
         try:
             result =Accomplishment.objects.get(
-            user_id=request.user.id,
-            project_id=request.data["project_id"],
-            report_id=request.data["report_id"],
-            accomplishment_id=request.data["accomplishment_id"]
-        )
+                id=pk
+            )
             result.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"status": "error", "meassage": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
         
 
-class RiskView(AllViewsMixin, APIView):
+class RiskView(AllPostsMixin, APIView):
     model = Risk
     serializer = RiskSerializer
     
-    def get(self,request):
+    def get(self, request, pk):
         try:
             result = Risk.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+                report_id=pk
             )
-            serializers = RiskSerializer(result,many = True)
-            return Response(serializers.data)
+            riskserializer = RiskSerializer(result,many = True)
+            return Response(riskserializer.data)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+        
 
     def put(self, request, format=None):
         try:
@@ -373,22 +371,19 @@ class RiskView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 risk_id=request.data["risk_id"]
             )
-            serializer = RiskSerializer(risk, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            riskserializer = RiskSerializer(risk, data=request.data)
+            if riskserializer.is_valid():
+                riskserializer.save()
+                return Response(riskserializer.data)
+            return Response(riskserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             risk = Risk.objects.get(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                risk_id=request.data["risk_id"]
+                id=pk
             )
             risk.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -396,24 +391,21 @@ class RiskView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
 
 
-
-
-class IssueView(AllViewsMixin, APIView):
+class IssueView(AllPostsMixin, APIView):
     model = Issue
     serializer = IssueSerializer
     
-    def get(self,request):
+    def get(self,request, pk):
         try:
             result = Issue.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+                report_id=pk
             )
-            serializers = IssueSerializer(result,many = True)
-            return Response(serializers.data)
+            issueserializer = IssueSerializer(result,many = True)
+            return Response(issueserializer.data)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-    
+        
+
     def put(self, request, format=None):
         try:
             issue = Issue.objects.get(
@@ -422,22 +414,19 @@ class IssueView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 issue_id=request.data["issue_id"]
             )
-            serializer = IssueSerializer(issue, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            issueserializer = IssueSerializer(issue, data=request.data)
+            if issueserializer.is_valid():
+                issueserializer.save()
+                return Response(issueserializer.data)
+            return Response(issueserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             issue = Issue.objects.get(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                issue_id=request.data["issue_id"]
+                id=pk
             )
             issue.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -446,22 +435,21 @@ class IssueView(AllViewsMixin, APIView):
     
 
 
-class AssumptionView(AllViewsMixin, APIView):
+class AssumptionView(AllPostsMixin, APIView):
     model = Assumption
     serializer = AssumptionSerializer
     
 
-    def get(self,request):
+    def get(self, request, pk):
         try:
             result = Assumption.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+                report_id=pk
             )
-            serializers = AssumptionSerializer(result,many = True)
-            return Response(serializers.data)
+            assumptionserializer = AssumptionSerializer(result,many = True)
+            return Response(assumptionserializer.data)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
+        
 
     def put(self, request, format=None):
         try:
@@ -471,22 +459,19 @@ class AssumptionView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 assumption_id=request.data["assumption_id"]
             )
-            serializer = AssumptionSerializer(assumption, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            assumptionserializer = AssumptionSerializer(assumption, data=request.data)
+            if assumptionserializer.is_valid():
+                assumptionserializer.save()
+                return Response(assumptionserializer.data)
+            return Response(assumptionserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             assumption = Assumption.objects.get(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                assumption_id=request.data["assumption_id"]
+                id=pk
             )
             assumption.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)
@@ -494,22 +479,21 @@ class AssumptionView(AllViewsMixin, APIView):
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-class DependencyView(AllViewsMixin, APIView):
+class DependencyView(AllPostsMixin, APIView):
     model = Dependency
     serializer = DependencySerializer
     
-    def get(self,request):
+    def get(self, request, pk):
         try:
             result = Dependency.objects.filter(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"]
+               report_id=pk
             )
-            serializers = DependencySerializer(result,many = True)
-            return Response(serializers.data)
+            dependancyserializer = DependencySerializer(result,many = True)
+            return Response(dependancyserializer.data)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
-    
+        
+
     def put(self, request, format=None):
         try:
             dependancy = Dependency.objects.get(
@@ -518,22 +502,19 @@ class DependencyView(AllViewsMixin, APIView):
                 report_id=request.data["report_id"],
                 dependency_id=request.data["dependency_id"]
             )
-            serializer = DependencySerializer(dependancy, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            dependancyserializer = DependencySerializer(dependancy, data=request.data)
+            if dependancyserializer.is_valid():
+                dependancyserializer.save()
+                return Response(dependancyserializer.data)
+            return Response(dependancyserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"status": "error", "message": f"{e}"}, status=status.HTTP_404_NOT_FOUND)
     
 
-    def delete(self, request, format=None):
+    def delete(self, request, pk, format=None):
         try:
             dependancy = Dependency.objects.get(
-                user_id=request.user.id,
-                project_id=request.data["project_id"],
-                report_id=request.data["report_id"],
-                dependency_id=request.data["dependency_id"]
+                id=pk
             )
             dependancy.delete()
             return Response({"status": "success", "message": "Record Deleted"}, status=status.HTTP_204_NO_CONTENT)

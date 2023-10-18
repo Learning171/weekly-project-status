@@ -34,13 +34,13 @@ class PhaseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TaskToDoSerializers(serializers.ModelSerializer):
+class TaskToDoSerializer(serializers.ModelSerializer):
     class Meta:
         model =TaskToDo
         fields = '__all__'
 
 
-class AccomplishmentSerializers(serializers.ModelSerializer):
+class AccomplishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accomplishment
         fields = '__all__'
