@@ -16,7 +16,7 @@ class Project(models.Model):
         return self.project_name
     
 
-class WeeklyReport(models.Model):
+class WeeklyReport(Project, models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, unique=True)
     week_start_date = models.DateField()

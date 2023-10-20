@@ -1,18 +1,21 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from project_plan import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+
+router.register("projectsapi", views.ProjectDetailViewSet, basename="projects")
+router.register("weeklyreportapi", views.WeeklyReportViewSet, basename="weeklyreport")
+router.register("projectstatusapi", views.ProjectStatusViewSet, basename="projectstatus")
+router.register("phasewisetimelineapi", views.PhaseWiseTimelineViewSet, basename="phasewisetimeline")
+router.register("phaseviewapi", views.PhaseViewSet, basename="phaseview")
+router.register("tasktodoapi", views.TaskToDoViewSet, basename="tasktodo")
+router.register("accomplishmentsapi", views.AccomplishmentViewSet, basename="accomplishments")
+router.register("riskapi", views.RiskViewSet, basename="risk")
+router.register("issueapi", views.IssueViewSet, basename="issue")
+router.register("assumptionsapi", views.AssumptionViewSet, basename="assumptions")
+router.register("dependancyapi", views.DependencyViewSet, basename="dependancy")
 
 urlpatterns = [
-    path('projects/', views.ProjectView.as_view()),
-    path('projects/details/', views.ProjectDetailView.as_view()),
-    path('weeklyreport/', views.ProjectWeeklyReportView.as_view()),
-    path('allweeklyreport/', views.AllWeeklyReportView.as_view()),
-    path('projectstatus/', views.ProjectStatusView.as_view()),
-    path('timeline/', views.PhaseWiseTimelineView.as_view()),
-    path('timeline/phase/', views.PhaseView.as_view()),
-    path('tasktodo/', views.TaskToDoView.as_view()),
-    path('accomplishments/', views.AccomplishmentView.as_view()),
-    path('risk/', views.RiskView.as_view()),
-    path('issue/', views.IssueView.as_view()),
-    path('assumptions/', views.AssumptionView.as_view()),
-    path('dependancy/', views.DependencyView.as_view()),
+    path('api/projectplan/', include(router.urls)),
 ]

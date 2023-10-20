@@ -1,7 +1,4 @@
-from django.db.models import fields
-
 from rest_framework import serializers
-
 from .models import *
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -9,16 +6,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = '__all__'
 
+class WeeklyReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklyReport
+        fields = '__all__'
 
 class ProjectStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectStatus
-        fields = '__all__'
-
-
-class WeeklyReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WeeklyReport
         fields = '__all__'
 
 
@@ -45,12 +40,10 @@ class AccomplishmentSerializers(serializers.ModelSerializer):
         model = Accomplishment
         fields = '__all__'
 
-
 class RiskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Risk
         fields = '__all__'
-
 
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,7 +54,6 @@ class AssumptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assumption
         fields = '__all__'
-
 
 class DependencySerializer(serializers.ModelSerializer):
     class Meta:
