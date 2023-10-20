@@ -16,11 +16,14 @@ class Project(models.Model):
         return self.project_name
     
 
-class WeeklyReport(Project, models.Model):
+class WeeklyReport(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, unique=True)
     week_start_date = models.DateField()
     week_end_date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        self.title = f"{self.week_end_date} - {self.project.project_name}"
+        super(WeeklyReport, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

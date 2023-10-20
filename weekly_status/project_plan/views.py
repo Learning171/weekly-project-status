@@ -2,8 +2,10 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from rest_framework import viewsets, status
-
+from project_plan.renderers import ProjectPlanRenderer
+    
 class ProjectDetailViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         proj = Project.objects.all()
         serializer = ProjectSerializer(proj, many=True)
@@ -55,6 +57,7 @@ class ProjectDetailViewSet(viewsets.ViewSet):
             return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class WeeklyReportViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         report = WeeklyReport.objects.all()
         serializer = WeeklyReportSerializer(report, many=True)
@@ -106,6 +109,7 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class ProjectStatusViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         projstatus = ProjectStatus.objects.all()
         serializer = ProjectStatusSerializer(projstatus, many=True)
@@ -157,6 +161,7 @@ class ProjectStatusViewSet(viewsets.ViewSet):
             return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class PhaseWiseTimelineViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         phasetimeline = PhaseWiseTimeline.objects.all()
         serializer = PhaseWiseTimelineSerializer(phasetimeline, many=True)
@@ -208,6 +213,7 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
             return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
         
 class PhaseViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         phasetimeline = Phase.objects.all()
         serializer = PhaseSerializer(phasetimeline, many=True)
@@ -259,6 +265,7 @@ class PhaseViewSet(viewsets.ViewSet):
             return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class TaskToDoViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         todo = TaskToDo.objects.all()
         serializer = TaskToDoSerializers(todo, many=True)
@@ -310,6 +317,7 @@ class TaskToDoViewSet(viewsets.ViewSet):
             return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class AccomplishmentViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         accomplishment = Accomplishment.objects.all()
         serializer = AccomplishmentSerializers(accomplishment, many=True)
@@ -361,6 +369,7 @@ class AccomplishmentViewSet(viewsets.ViewSet):
             return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class RiskViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         risk = Risk.objects.all()
         serializer = RiskSerializer(risk, many=True)
@@ -412,6 +421,7 @@ class RiskViewSet(viewsets.ViewSet):
             return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class IssueViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         issue = Issue.objects.all()
         serializer = IssueSerializer(issue, many=True)
@@ -463,6 +473,7 @@ class IssueViewSet(viewsets.ViewSet):
             return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class AssumptionViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         assumption = Assumption.objects.all()
         serializer = AssumptionSerializer(assumption, many=True)
@@ -514,6 +525,7 @@ class AssumptionViewSet(viewsets.ViewSet):
             return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class DependencyViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
         dependency = Dependency.objects.all()
         serializer = DependencySerializer(dependency, many=True)
