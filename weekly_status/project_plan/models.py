@@ -7,10 +7,14 @@ class Project(models.Model):
     project_name = models.CharField(max_length=100, unique=True)
     summary = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    manager_name = models.CharField(max_length=100)
+    manager_name = models.CharField(max_length=100, blank=True)
     client_name = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        self.manager_name = self.user.user_name
+        super(Project, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.project_name
@@ -45,7 +49,7 @@ class ProjectStatus(models.Model):
 
 
 class PhaseWiseTimeline(models.Model):
-    report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
+    report = models.OneToOneField(WeeklyReport, on_delete=models.CASCADE)
     timeline_title = models.CharField(max_length=200)
 
     
