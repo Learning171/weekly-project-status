@@ -7,7 +7,7 @@ from project_plan.renderers import ProjectPlanRenderer
 class ProjectDetailViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
-        proj = Project.objects.all()
+        proj = Project.objects.filter(user_id=request.user.id)
         serializer = ProjectSerializer(proj, many=True)
         return Response(serializer.data)
 
