@@ -22,6 +22,7 @@ class Project(models.Model):
 
 class WeeklyReport(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, unique=True, blank=True)
     week_start_date = models.DateField()
     week_end_date = models.DateField()
 
@@ -55,14 +56,15 @@ class PhaseWiseTimeline(models.Model):
     
 class Phase(models.Model):
     timeline = models.ForeignKey(PhaseWiseTimeline, on_delete=models.CASCADE)
-    phase_choice = (
-        ('Prepare','Prepare'),
-        ('Explore','Explore'),
-        ('Realize','Realize'),
-        ('Deploy','Deploy'),
-        ('Run','Run')
-    )
-    phase_name = models.CharField(max_length=10, choices=phase_choice)
+    # phase_choice = (
+    #     ('Prepare','Prepare'),
+    #     ('Explore','Explore'),
+    #     ('Realize','Realize'),
+    #     ('Deploy','Deploy'),
+    #     ('Run','Run')
+    # )
+    # phase_name = models.CharField(max_length=10, choices=phase_choice)
+    phase_name = models.CharField(max_length=20)
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
     revised_end_date = models.DateField()
