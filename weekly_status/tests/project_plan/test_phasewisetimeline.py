@@ -3,6 +3,8 @@ import json
 
 @pytest.mark.django_db
 def test_phasewisetimeline_post(client, payload):
+    # User Registration
+
     register_response = client.post('http://127.0.0.1:8000/api/user/register/',payload)
     assert register_response.status_code==201
  
@@ -14,7 +16,7 @@ def test_phasewisetimeline_post(client, payload):
     assert profile_response.status_code == 200
  
 
-    #post method
+    #post method for Phasewise timeline
     url = "http://127.0.0.1:8000/api/projectplan/projectsapi/"
     dataa ={
         "project_name":"project1",
@@ -39,6 +41,7 @@ def test_phasewisetimeline_post(client, payload):
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/"
     post_data = {
+        "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
         "project":1
@@ -52,7 +55,7 @@ def test_phasewisetimeline_post(client, payload):
     post_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/"
     post_data = {
         
-    "timeline_title":"timeline_title",
+    "timeline_title":f'{post_data["title"]}',
     "report":1
     }
     post_response=client.post(post_url,post_data)
@@ -79,7 +82,7 @@ def test_phasewisetimeline_post(client, payload):
     # put method
     put_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/1/"
     put_data = {
-      
+    "title": "my title 1",
     "timeline_title":"timeline_title1",
     "report":1
     }

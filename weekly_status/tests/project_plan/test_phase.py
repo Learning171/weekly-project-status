@@ -39,6 +39,7 @@ def test_phase_post(client, payload):
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/"
     post_data = {
+        "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
         "project":1

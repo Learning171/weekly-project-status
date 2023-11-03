@@ -47,6 +47,7 @@ def test_project_post(client, payload):
     post_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/"
 
     post_data = {
+        "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
         "project":1
@@ -57,6 +58,7 @@ def test_project_post(client, payload):
     assert post_response.status_code==201
     print("weeklyreport added success", post_response.status_code)
     print("......................")
+
     
     # get method
 
@@ -78,6 +80,7 @@ def test_project_post(client, payload):
     # put method
     put_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/1/"
     put_data = {
+        "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-20",
         "project":1

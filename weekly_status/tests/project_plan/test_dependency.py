@@ -43,6 +43,7 @@ def test_dependency_post(client, payload):
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/"
     post_data = {
+        "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
         "project":1
@@ -67,10 +68,10 @@ def test_dependency_post(client, payload):
     post_url = "http://127.0.0.1:8000/api/projectplan/dependancyapi/"
     post_data = {
         "dependency_description":"dependency description",
-    "target_completion_date":"2023-09-10",
-    "responsible_party":"responsible party",
-    "RAGStatus":"R",
-    "report":1
+        "target_completion_date":"2023-09-10",
+        "responsible_party":"responsible party",
+        "RAGStatus":"R",
+        "report":1
     }
     post_response=client.post(post_url,post_data)
     print(post_response.status_code)
@@ -98,10 +99,10 @@ def test_dependency_post(client, payload):
     put_url = "http://127.0.0.1:8000/api/projectplan/dependancyapi/1/"
     put_data = {
         "dependency_description":"dependency description",
-    "target_completion_date":"2023-09-10",
-    "responsible_party":"responsible party",
-    "RAGStatus":"G",
-    "report":1
+        "target_completion_date":"2023-09-10",
+        "responsible_party":"responsible party",
+        "RAGStatus":"G",
+        "report":1
     }
     put_response=client.put(put_url,data=json.dumps(put_data), content_type='application/json')
     print(put_response.status_code)
