@@ -25,27 +25,37 @@ def test_project_post(client, payload):
         "end_date":"2023-09-12"
         }
     response =client.post(url, dataa)
-    print(response.data)
+    print("-=-====--=-=-=projectsapi-=-=-=-=-=-=-=",response.data)
     assert response.status_code==201
     print("Project added success", response.status_code)
     print("......................")
    
-    
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/3/"
+    get_response = client.get(url)
+    print("-----test_projects_get----", get_response.data)
+    print(get_response.status_code)
+    assert response.status_code == 201
+
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/"
     post_data = {
         "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
-        "project":1
+        "project":get_response.data['id']
     }
     post_response=client.post(post_url,post_data)
     print(post_response.data)
     assert post_response.status_code==201
     print("weeklyreport added success", post_response.status_code)
     print("......................")
-
-    # main risk test case
+    
+    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/3/"
+    get_response = client.get(get_url)
+    print("-=-=-=-=-=-=-=get weekly response issue-=-==-", get_response.data)
+    assert get_response.status_code == 200
+    print("=---=-=-=-=-=-=-=-=---=-=-=-=-=-=")
+    # main issue test case
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/issueapi/"
     post_data = {
@@ -55,13 +65,13 @@ def test_project_post(client, payload):
         "impact":"bad",
         "responsible_party":"self",
         "RAGStatus":"A",
-        "report":1
+        "report":get_response.data['id']
     }
     post_response=client.post(post_url,post_data)
     assert post_response.status_code==201
     print("issue added success", post_response.data)
     print(post_response.status_code)
-    print("......................")
+    print(".........-=-=-=-=-=-=.............")
 
     # get method
     get_url ="http://127.0.0.1:8000/api/projectplan/issueapi/"
@@ -88,7 +98,7 @@ def test_project_post(client, payload):
         "impact":"bad",
         "responsible_party":"developers",
         "RAGStatus":"R",
-        "report":1
+        "report":3
     }
     put_response=client.put(put_url,data=json.dumps(put_data), content_type='application/json')
     print(put_response.data)
@@ -101,4 +111,11 @@ def test_project_post(client, payload):
     delete_response =client.delete(delete_url)
     print("delete_response------",delete_response.data)
     assert delete_response.status_code==200
+    print("......................")
+
+    # delete fail 404 method
+    delete_fail404_url ="http://127.0.0.1:8000/api/projectplan/issueapi/3/"
+    delete_fail404_response =client.delete(delete_fail404_url)
+    print("delete_response------",delete_fail404_response.data)
+    assert delete_fail404_response.status_code==404
     print("......................")

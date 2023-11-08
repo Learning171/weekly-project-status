@@ -17,6 +17,7 @@ def test_phase_post(client, payload):
     #post method
     url = "http://127.0.0.1:8000/api/projectplan/projectsapi/"
     dataa ={
+        "id":1,
         "project_name":"project1",
         "summary":"about project",
         "user":profile_response.data['id'],
@@ -30,9 +31,10 @@ def test_phase_post(client, payload):
     
    
     # get method
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/"
-    response = client.get(url)
-    assert response.status_code == 200
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/4/"
+    get_response = client.get(url)
+    print("-=-=-=-=-get response phase-==-=-=-=",get_response.data)
+    assert get_response.status_code == 200
     print("......................")
 
     #main weekly report
@@ -42,19 +44,24 @@ def test_phase_post(client, payload):
         "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
-        "project":1
+        "project":get_response.data['id']
     }
     post_response=client.post(post_url,post_data)
     assert post_response.status_code==201
     print("......................")
+
+    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/4/"
+    get_response = client.get(get_url)
+    print("-=-=-=-=-=-=-=get weekly response issue-=-==-", get_response.data)
+    assert get_response.status_code == 200
 
     #main phasewisetimeline 
     # post method
     post_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/"
     post_data = {
         
-    "timeline_title":"timeline_title",
-    "report":1
+    "timeline_title":f'{post_data["title"]}',
+    "report":4
     }
     post_response=client.post(post_url,post_data)
     assert post_response.status_code==201

@@ -32,11 +32,11 @@ def test_dependency_post(client, payload):
     print("......................")
    
     # get method
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/"
-    response = client.get(url)
-    print("---------", response.data)
-    print(response.status_code)
-    assert response.status_code == 200
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/2/"
+    get_response = client.get(url)
+    print("---get method------", get_response.data)
+    print(get_response.status_code)
+    assert get_response.status_code == 200
     print("......................")
 
     # weekly report
@@ -46,7 +46,7 @@ def test_dependency_post(client, payload):
         "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-15",
-        "project":1
+        "project":get_response.data['id']
     }
     post_response=client.post(post_url,post_data)
     print(post_response.status_code)
@@ -71,7 +71,7 @@ def test_dependency_post(client, payload):
         "target_completion_date":"2023-09-10",
         "responsible_party":"responsible party",
         "RAGStatus":"R",
-        "report":1
+        "report":2
     }
     post_response=client.post(post_url,post_data)
     print(post_response.status_code)
@@ -102,7 +102,7 @@ def test_dependency_post(client, payload):
         "target_completion_date":"2023-09-10",
         "responsible_party":"responsible party",
         "RAGStatus":"G",
-        "report":1
+        "report":2
     }
     put_response=client.put(put_url,data=json.dumps(put_data), content_type='application/json')
     print(put_response.status_code)

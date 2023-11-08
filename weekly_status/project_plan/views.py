@@ -225,7 +225,7 @@ class PhaseViewSet(viewsets.ViewSet):
             serializer = PhaseSerializer(phasetimeline)
             return Response(serializer.data)
         except Phase.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Phase does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
         serializer = PhaseSerializer(data=request.data)
