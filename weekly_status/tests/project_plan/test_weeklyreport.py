@@ -33,7 +33,7 @@ def test_weeklyreport(client, payload):
 
     # get method
 
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/9/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/11/"
     get_response = client.get(url)
     print("---------", get_response.data)
     print(get_response.status_code)
@@ -85,7 +85,7 @@ def test_weeklyreport(client, payload):
     print("......................")
 
     # get by id
-    get_url_id = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/8/"
+    get_url_id = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/10/"
     get_response_id = client.get(get_url_id)
     print("get method for weeklyreport by id---------", get_response_id.data)
     print(get_response_id.status_code)
@@ -101,12 +101,12 @@ def test_weeklyreport(client, payload):
     print("......................")
 
     # put method
-    put_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/8/"
+    put_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/10/"
     put_data = {
         "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-20",
-        "project":9
+        "project":11
     }
     put_response=client.put(put_url,data=json.dumps(put_data), content_type='application/json')
     print(put_response.status_code)
@@ -134,7 +134,7 @@ def test_weeklyreport(client, payload):
         "title": "my title",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-20",
-        "project":8,
+        "project":11,
     }
     fail_put_404_response=client.put(put_url,data=json.dumps(fail_put_404_data), content_type='application/json')
     print(fail_put_404_response.data)
@@ -143,12 +143,12 @@ def test_weeklyreport(client, payload):
     print("......................")
 
     #Patch 200 sucess weeklyreport
-    patch_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/8/"
+    patch_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/10/"
     patch_data = {
         "title": "patch request",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-20",
-        "project":9
+        "project":11
     }
     patch_200_response=client.patch(patch_url,data=json.dumps(patch_data), content_type='application/json')
     print(patch_200_response.status_code)
@@ -157,7 +157,7 @@ def test_weeklyreport(client, payload):
     print("......................")
 
     #Patch 400 Bad request sucess weeklyreport
-    fail_patch_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/8/"
+    fail_patch_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/10/"
     fail_patch_data = {
         "title": "patch request",
         "week_start_date":"2023-09-10",
@@ -176,7 +176,7 @@ def test_weeklyreport(client, payload):
         "title": "patch request",
         "week_start_date":"2023-09-10",
         "week_end_date":"2023-09-20",
-        "project":8,
+        "project":10,
     }
     patch_fail_404_response=client.patch(fail_patch_url,data=json.dumps(fail_patch_data), content_type='application/json')
     print(patch_fail_404_response.status_code)
@@ -185,7 +185,7 @@ def test_weeklyreport(client, payload):
     print("......................")
 
     # delete method
-    delete_url ="http://127.0.0.1:8000/api/projectplan/weeklyreportapi/8/"
+    delete_url ="http://127.0.0.1:8000/api/projectplan/weeklyreportapi/10/"
     delete_response =client.delete(delete_url)
     print("delete_response------",delete_response.data)
     assert delete_response.status_code == 200

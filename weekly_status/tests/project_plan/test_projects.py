@@ -45,7 +45,7 @@ def test_project_post(client, payload):
     print("fail post success", fail_post_response.status_code)
     
     # Get project by Id
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     response = client.get(url)
     assert response.status_code == 200
 
@@ -69,7 +69,7 @@ def test_project_post(client, payload):
         "end_date": "2023-09-12",
         "user": f"{response.data['user']}"
     }
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     put_response =client.put(url, data=json.dumps(put_data), content_type='application/json')
     print("put_response------",put_response.data, response.status_code)
     assert put_response.status_code == 200
@@ -85,7 +85,7 @@ def test_project_post(client, payload):
         "end_date": "2023-09-12",
         "user": f"{response.data['user']}"
     }
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     put_fail_response =client.put(url, data=json.dumps(put_fail_data), content_type='application/json')
     print("put_response---400---",put_fail_response.data, put_fail_response.status_code)
     assert put_fail_response.status_code == 400
@@ -106,7 +106,7 @@ def test_project_post(client, payload):
         "end_date": "2023-09-12",
         "user": f"{response.data['user']}"
     }
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     patch_response =client.patch(url, data=json.dumps(patch_data), content_type='application/json')
     print("patch_response------",patch_response.data, patch_response.status_code)
     assert patch_response.status_code == 200
@@ -121,7 +121,7 @@ def test_project_post(client, payload):
         "end_date": "2023-09-12",
         "user": f"{response.data['user']}"
     }
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     patch_fail_response =client.patch(url, data=json.dumps(patch_fail_data), content_type='application/json')
     print("patch_fail 400response------",patch_fail_response.data, patch_fail_response.status_code)
     assert patch_fail_response.status_code == 400
@@ -134,7 +134,7 @@ def test_project_post(client, payload):
 
 
     #Delete sucess 200
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
     delete_response =client.delete(url)
     print("delete_response------",delete_response.data)
     assert delete_response.status_code == 200

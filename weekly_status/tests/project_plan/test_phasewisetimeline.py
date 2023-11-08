@@ -32,7 +32,7 @@ def test_phasewisetimeline_post(client, payload):
     
    
     # get method
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/5/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/6/"
     get_response = client.get(url)
     print("-=-=-=-=-get response phasewise-==-=-=-=",get_response.data)
     assert get_response.status_code == 200
@@ -51,7 +51,7 @@ def test_phasewisetimeline_post(client, payload):
     assert post_response.status_code==201
     print("......................")
 
-    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/5/"
+    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/6/"
     get_response = client.get(get_url)
     print("-=-=-=-=-=-=-=get weekly response issue-=-==-", get_response.data)
     assert get_response.status_code == 200
@@ -61,7 +61,7 @@ def test_phasewisetimeline_post(client, payload):
     post_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/"
     post_data_phasewise = { 
     "timeline_title":f'{post_data["title"]}',
-    "report":5
+    "report":6
     }
     post_response=client.post(post_url,post_data_phasewise)
     assert post_response.status_code==201
@@ -108,7 +108,7 @@ def test_phasewisetimeline_post(client, payload):
     put_data = {
     "title": "my title 1",
     "timeline_title":"timeline_title1",
-    "report":5
+    "report":6
     }
     put_response=client.put(put_url,data=json.dumps(put_data), content_type='application/json')
     print(put_response.status_code)
@@ -134,7 +134,7 @@ def test_phasewisetimeline_post(client, payload):
     put_fail_data = {
     "title": "my title 1",
     "timeline_title":"timeline_title1",
-    "report":5,
+    "report":6,
     }
     put_fail404_response=client.put(put_fail404_url,data=json.dumps(put_fail_data), content_type='application/json')
     print(put_fail404_response.status_code)
@@ -146,7 +146,7 @@ def test_phasewisetimeline_post(client, payload):
     patch_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/2/"
     patch_data = {
     "timeline_title":"timeline_title3",
-    "report":5
+    "report":6
     }
     patch_response=client.patch(patch_url,data=json.dumps(patch_data), content_type='application/json')
     print(patch_response.status_code)
@@ -170,7 +170,7 @@ def test_phasewisetimeline_post(client, payload):
     patch_fail404_url = "http://127.0.0.1:8000/api/projectplan/phasewisetimelineapi/12/"
     patch_fail404_data = {
     "timeline_title":"timeline_title3",
-    "report":5
+    "report":6
     }
     patch_fail404_response=client.patch(patch_fail404_url,data=json.dumps(patch_fail404_data), content_type='application/json')
     print(patch_fail404_response.status_code)

@@ -33,7 +33,7 @@ def test_project_post(client, payload):
 
     # get method
 
-    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/7/"
+    url = "http://127.0.0.1:8000/api/projectplan/projectsapi/8/"
     get_response = client.get(url)
     print("-----test_projecstatus_get----", get_response.data)
     print(get_response.status_code)
@@ -56,7 +56,7 @@ def test_project_post(client, payload):
     print("weeklyreport added success", post_response.status_code)
     print("......................")
 
-    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/6/"
+    get_url = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/7/"
     get_response = client.get(get_url)
     print("-=-=-=-=-=-=-=get weekly response issue-=-==-", get_response.data)
     assert get_response.status_code == 200
@@ -70,7 +70,7 @@ def test_project_post(client, payload):
     print("......................")
 
     # get by id
-    get_url_id = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/6/"
+    get_url_id = "http://127.0.0.1:8000/api/projectplan/weeklyreportapi/7/"
     get_response_id = client.get(get_url_id)
     print("get_response_id",get_response_id.status_code)
     assert get_response_id.status_code == 200
@@ -86,7 +86,7 @@ def test_project_post(client, payload):
         "schedule": "A",
         "cost": "A",
         "overall_health": "A",
-        "report": 6
+        "report": 7
     }
 
     project_status_post_response=client.post(project_status_post_url,status_post_data)
@@ -126,7 +126,7 @@ def test_project_post(client, payload):
     print("......................")
 
     #get fail 404 not exists
-    project_status_get_url_id = "http://127.0.0.1:8000/api/projectplan/projectstatusapi/6/"
+    project_status_get_url_id = "http://127.0.0.1:8000/api/projectplan/projectstatusapi/8/"
     get_response_id = client.get(project_status_get_url_id)
     assert get_response_id.status_code == 404
     print("......................")
@@ -140,7 +140,7 @@ def test_project_post(client, payload):
         "schedule": "G",
         "cost": "A",
         "overall_health": "R",
-        "report": 6
+        "report": 7
     }
     project_status_put_response=client.put(project_status_put_url,data=json.dumps(status_post_data), content_type='application/json')
     print(project_status_put_response.data)
@@ -174,7 +174,7 @@ def test_project_post(client, payload):
         "schedule": "G",
         "cost": "A",
         "overall_health": "R",
-        "report": 6,
+        "report": 7,
     }
     project_status_put_fail_404_response=client.put(project_status_fail_put_url,data=json.dumps(status_fail404_data), content_type='application/json')
     print(project_status_put_fail_404_response.data)
@@ -191,7 +191,7 @@ def test_project_post(client, payload):
         "schedule": "R",
         "cost": "A",
         "overall_health": "R",
-        "report": 6,
+        "report": 7,
     }
     project_status_patch_response=client.patch(project_status_patch_url,data=json.dumps(status_patch_data), content_type='application/json')
     print(project_status_patch_response.data)
@@ -225,7 +225,7 @@ def test_project_post(client, payload):
         "schedule": "R",
         "cost": "A",
         "overall_health": "R",
-        "report": 6,
+        "report": 7,
     }
     project_status_patch_fail404_response=client.patch(project_status_patch_fail404_url,data=json.dumps(status_patch_fail_data), content_type='application/json')
     print(project_status_patch_fail404_response.data)
