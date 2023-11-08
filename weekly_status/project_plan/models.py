@@ -15,9 +15,6 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         self.manager_name = self.user.user_name
         super(Project, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.project_name
     
 
 class WeeklyReport(models.Model):
@@ -30,9 +27,6 @@ class WeeklyReport(models.Model):
         self.title = f"{self.week_end_date} - {self.project.project_name}"
         super(WeeklyReport, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return self.title
-
 
 class ProjectStatus(models.Model):
     color_choice = (
@@ -41,29 +35,30 @@ class ProjectStatus(models.Model):
         ('G', 'Green')
     )
     report = models.OneToOneField(WeeklyReport, on_delete=models.CASCADE)
-    overall_last_week = models.CharField(max_length=2, choices=color_choice)
-    overall_this_week = models.CharField(max_length=2, choices=color_choice)
-    scope = models.CharField(max_length=2, choices=color_choice)
-    schedule = models.CharField(max_length=2, choices=color_choice)
-    cost = models.CharField(max_length=2, choices=color_choice)
-    overall_health = models.CharField(max_length=2, choices=color_choice)
+    overall_last_week = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    overall_this_week = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    scope = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    schedule = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    cost = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    overall_health = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    prepare = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    explore = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    realize = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    deploy = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    run = models.CharField(max_length=2, choices=color_choice, default="Gr")
 
 
 class PhaseWiseTimeline(models.Model):
     report = models.OneToOneField(WeeklyReport, on_delete=models.CASCADE)
-    timeline_title = models.CharField(max_length=200)
+    timeline_title = models.CharField(max_length=200, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.timeline_title = f"timeline-{self.report.title}"
+        super(PhaseWiseTimeline, self).save(*args, **kwargs)
 
     
 class Phase(models.Model):
     timeline = models.ForeignKey(PhaseWiseTimeline, on_delete=models.CASCADE)
-    # phase_choice = (
-    #     ('Prepare','Prepare'),
-    #     ('Explore','Explore'),
-    #     ('Realize','Realize'),
-    #     ('Deploy','Deploy'),
-    #     ('Run','Run')
-    # )
-    # phase_name = models.CharField(max_length=10, choices=phase_choice)
     phase_name = models.CharField(max_length=20)
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
@@ -73,7 +68,7 @@ class Phase(models.Model):
         ('A', 'Amber'),
         ('G', 'Green')
     )
-    status = models.CharField(max_length=10,choices=color_choice)
+    status = models.CharField(max_length=10, choices=color_choice, default="Gr")
     remark = models.TextField()
 
 
@@ -91,9 +86,6 @@ class Accomplishment(models.Model):
 class Assumption(models.Model):
     report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
     assumption = models.TextField()
-
-    def __str__(self):
-            return self.assumption
     
 
 class Risk(models.Model):
@@ -109,10 +101,6 @@ class Risk(models.Model):
         ('G', 'Green')
     )
     RAGStatus = models.CharField(max_length=6, choices=color_choice)
-
-
-    def __str__(self):
-        return self.risk_description
      
 
 class Issue(models.Model):
@@ -130,11 +118,6 @@ class Issue(models.Model):
     RAGStatus = models.CharField(max_length=6, choices=color_choice)
 
 
-    def __str__(self):
-        return self.issue_description
-     
-
-
 class Dependency(models.Model):
     report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
     dependency_description = models.CharField(max_length=200)
@@ -146,7 +129,3 @@ class Dependency(models.Model):
         ('G', 'Green')
     )
     RAGStatus = models.CharField(max_length=6, choices=color_choice)
-
-
-    def __str__(self):
-        return self.dependency_description

@@ -23,7 +23,7 @@ class ProjectDetailViewSet(viewsets.ViewSet):
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -75,7 +75,7 @@ class WeeklyReportViewSet(viewsets.ViewSet):
         serializer = WeeklyReportSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -127,7 +127,7 @@ class ProjectStatusViewSet(viewsets.ViewSet):
         serializer = ProjectStatusSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -179,7 +179,7 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
         serializer = PhaseWiseTimelineSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -228,10 +228,10 @@ class PhaseViewSet(viewsets.ViewSet):
             return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = PhaseSerializer(data=request.data)
+        serializer = PhaseSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -283,7 +283,7 @@ class TaskToDoViewSet(viewsets.ViewSet):
         serializer = TaskToDoSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -335,7 +335,7 @@ class AccomplishmentViewSet(viewsets.ViewSet):
         serializer = AccomplishmentSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -387,7 +387,7 @@ class RiskViewSet(viewsets.ViewSet):
         serializer = RiskSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -439,7 +439,7 @@ class IssueViewSet(viewsets.ViewSet):
         serializer = IssueSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -491,7 +491,7 @@ class AssumptionViewSet(viewsets.ViewSet):
         serializer = AssumptionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -543,7 +543,7 @@ class DependencyViewSet(viewsets.ViewSet):
         serializer = DependencySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
