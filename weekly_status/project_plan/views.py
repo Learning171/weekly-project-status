@@ -3,6 +3,7 @@ from .models import *
 from .serializers import *
 from rest_framework import viewsets, status
 from project_plan.renderers import ProjectPlanRenderer
+from django.shortcuts import get_object_or_404
     
 class ProjectDetailViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
@@ -71,6 +72,7 @@ class WeeklyReportViewSet(viewsets.ViewSet):
         except WeeklyReport.DoesNotExist:
             return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+
     def create(self, request):
         serializer = WeeklyReportSerializer(data=request.data)
         if serializer.is_valid():
@@ -117,7 +119,8 @@ class ProjectStatusViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            projstatus = ProjectStatus.objects.get(pk=pk)
+           
+            projstatus = ProjectStatus.objects.get(report=pk)
             serializer = ProjectStatusSerializer(projstatus)
             return Response(serializer.data)
         except ProjectStatus.DoesNotExist:
@@ -169,7 +172,8 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            phasetimeline = PhaseWiseTimeline.objects.get(pk=pk)
+           
+            phasetimeline = PhaseWiseTimeline.objects.get(report=pk)
             serializer = PhaseWiseTimelineSerializer(phasetimeline)
             return Response(serializer.data)
         except PhaseWiseTimeline.DoesNotExist:
@@ -221,8 +225,9 @@ class PhaseViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            phasetimeline = Phase.objects.get(pk=pk)
-            serializer = PhaseSerializer(phasetimeline)
+           
+            phasetimeline = Phase.objects.filter(timeline_id=pk)
+            serializer = PhaseSerializer(phasetimeline, many=True)
             return Response(serializer.data)
         except Phase.DoesNotExist:
             return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -325,7 +330,8 @@ class AccomplishmentViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            accomplishment = Accomplishment.objects.get(pk=pk)
+            
+            accomplishment = Accomplishment.objects.get(report=pk)
             serializer = AccomplishmentSerializers(accomplishment)
             return Response(serializer.data)
         except Accomplishment.DoesNotExist:
@@ -377,7 +383,8 @@ class RiskViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            risk = Risk.objects.get(pk=pk)
+           
+            risk = Risk.objects.get(report=pk)
             serializer = RiskSerializer(risk)
             return Response(serializer.data)
         except Risk.DoesNotExist:
@@ -429,7 +436,8 @@ class IssueViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            issue = Issue.objects.get(pk=pk)
+            
+            issue = Issue.objects.get(report=pk)
             serializer = IssueSerializer(issue)
             return Response(serializer.data)
         except Issue.DoesNotExist:
@@ -481,7 +489,8 @@ class AssumptionViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            assumption = Assumption.objects.get(pk=pk)
+            
+            assumption = Assumption.objects.get(report=pk)
             serializer = AssumptionSerializer(assumption)
             return Response(serializer.data)
         except Assumption.DoesNotExist:
@@ -533,7 +542,8 @@ class DependencyViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            dependency = Dependency.objects.get(pk=pk)
+            
+            dependency = Dependency.objects.get(report=pk)
             serializer = DependencySerializer(dependency)
             return Response(serializer.data)
         except Dependency.DoesNotExist:
