@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from project_plan.renderers import ProjectPlanRenderer
 from django.shortcuts import get_object_or_404
     
@@ -60,7 +61,9 @@ class ProjectDetailViewSet(viewsets.ViewSet):
 class WeeklyReportViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
     def list(self, request):
-        report = WeeklyReport.objects.all()
+        user_projects = Project.objects.filter(user_id=request.user.id)
+        user_projects_ids = [project.id for project in user_projects]
+        report = WeeklyReport.objects.filter(project_id__in=user_projects_ids)
         serializer = WeeklyReportSerializer(report, many=True)
         return Response(serializer.data)
 
@@ -109,6 +112,12 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             return Response({"msg": "Deletion Successful"})
         except WeeklyReport.DoesNotExist:
             return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class ProjectWeeklyReportView(APIView):
+    def get(self, request, project_id):
+        reports =  WeeklyReport.objects.filter(project_id=project_id)
+        weeklyreportserializer = WeeklyReportSerializer(reports, many=True)
+        return Response(weeklyreportserializer.data, status=status.HTTP_200_OK)
 
 class ProjectStatusViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]

@@ -4,14 +4,15 @@ from rest_framework.views import APIView
 from account.serializers import (
     UserRegistartionSerializers,
     UserLoginSerializer,
-    UserProfileSerializer,
     UserChangePasswordSerializer,
     SendPasswordResetEmailSerializer,
     UserPasswordResetSerializer,
     UserLogoutSerializer,
+    UserListSerializer,
 )
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
+from account.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
@@ -57,7 +58,7 @@ class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        serializer = UserProfileSerializer(request.user)
+        serializer = UserListSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -98,3 +99,27 @@ class UserLogoutView(APIView):
             return Response({"msg": "Logout Successful"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Invalid Token"}, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminUserListView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        admin_list = User.objects.filter(user_type="Admin")
+        serializer = UserListSerializer(admin_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ManagementUserListView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        management_list = User.objects.filter(user_type="Management")
+        serializer = UserListSerializer(management_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ProjectManagerUserListView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        project_manager_list = User.objects.filter(user_type="Project_manager")
+        serializer = UserListSerializer(project_manager_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
