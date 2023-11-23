@@ -50,7 +50,7 @@ class ProjectStatus(models.Model):
 
 class PhaseWiseTimeline(models.Model):
     report = models.OneToOneField(WeeklyReport, on_delete=models.CASCADE)
-    timeline_title = models.CharField(max_length=200)
+    timeline_title = models.CharField(max_length=200, blank=True)
 
     def save(self, *args, **kwargs):
         self.timeline_title = f"timeline-{self.report.title}"
