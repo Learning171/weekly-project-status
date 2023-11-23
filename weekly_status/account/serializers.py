@@ -31,11 +31,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ["user_email", "password"]
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length = 250, style = {"input_type": "password"}, write_only = True)
     password2 = serializers.CharField(max_length = 250, style = {"input_type": "password"}, write_only = True)
@@ -103,3 +98,8 @@ class UserPasswordResetSerializer(serializers.Serializer):
         
 class UserLogoutSerializer(serializers.ModelSerializer):
     pass
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["user_email", "user_name", "is_active","user_type"]

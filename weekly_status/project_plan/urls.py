@@ -18,4 +18,5 @@ router.register("dependancyapi", views.DependencyViewSet, basename="dependancy")
 
 urlpatterns = [
     path('api/projectplan/', include(router.urls)),
+    path('api/projectplan/projectweeklyreportapi/<int:project_id>/', views.ProjectWeeklyReportView.as_view()),
 ]
