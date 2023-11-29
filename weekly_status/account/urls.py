@@ -17,6 +17,7 @@ urlpatterns = [
     path("login/", UserLoginView.as_view(), name="login"),
     path("logout/", UserLogoutView.as_view(), name="logout"),
     path("profile/", UserProfileView.as_view(), name="profile"),
+    path("profile/<int:pk>/", UserProfileView.as_view(), name="profile"),
     path("adminlist/", AdminUserListView.as_view(), name="adminlist"),
     path("managementlist/", ManagementUserListView.as_view(), name="managementlist"),
     path("projectmanagerlist/", ProjectManagerUserListView.as_view(), name="projectmanagerlist"),

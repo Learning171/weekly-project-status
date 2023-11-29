@@ -61,6 +61,17 @@ class UserProfileView(APIView):
         serializer = UserListSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def put(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserListSerializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Accomplishment.DoesNotExist:
+            return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class UserChangePasswordView(APIView):
     renderer_classes = [UserRenderer]
