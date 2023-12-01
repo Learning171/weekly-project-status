@@ -134,3 +134,11 @@ class ProjectManagerUserListView(APIView):
         project_manager_list = User.objects.filter(user_type="Project_manager")
         serializer = UserListSerializer(project_manager_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UserProfileIdView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk=None):
+        profile = User.objects.get(id=pk)
+        serializer = UserListSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
