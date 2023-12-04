@@ -12,6 +12,7 @@ def test_accomplishment(client, payload):
     
     profile_response = client.get("http://127.0.0.1:8000/api/user/profile/", headers=headers)
     assert profile_response.status_code == 200
+    print(profile_response.data)
 
     url = "http://127.0.0.1:8000/api/projectplan/projectsapi/"
 
