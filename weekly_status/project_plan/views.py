@@ -287,14 +287,14 @@ class TaskToDoViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            todo = TaskToDo.objects.get(pk=pk)
-            serializer = TaskToDoSerializers(todo)
+            todo = TaskToDo.objects.filter(report=pk)
+            serializer = TaskToDoSerializers(todo, many = True)
             return Response(serializer.data)
         except TaskToDo.DoesNotExist:
             return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = TaskToDoSerializers(data=request.data)
+        serializer = TaskToDoSerializers(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -340,14 +340,14 @@ class AccomplishmentViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             
-            accomplishment = Accomplishment.objects.get(report=pk)
-            serializer = AccomplishmentSerializers(accomplishment)
+            accomplishment = Accomplishment.objects.filter(report=pk)
+            serializer = AccomplishmentSerializers(accomplishment, many = True)
             return Response(serializer.data)
         except Accomplishment.DoesNotExist:
             return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = AccomplishmentSerializers(data=request.data)
+        serializer = AccomplishmentSerializers(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -393,14 +393,14 @@ class RiskViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
            
-            risk = Risk.objects.get(report=pk)
-            serializer = RiskSerializer(risk)
+            risk = Risk.objects.filter(report=pk)
+            serializer = RiskSerializer(risk, many = True)
             return Response(serializer.data)
         except Risk.DoesNotExist:
             return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = RiskSerializer(data=request.data)
+        serializer = RiskSerializer(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -446,14 +446,14 @@ class IssueViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             
-            issue = Issue.objects.get(report=pk)
-            serializer = IssueSerializer(issue)
+            issue = Issue.objects.filter(report=pk)
+            serializer = IssueSerializer(issue, many = True)
             return Response(serializer.data)
         except Issue.DoesNotExist:
             return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = IssueSerializer(data=request.data)
+        serializer = IssueSerializer(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -499,14 +499,14 @@ class AssumptionViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             
-            assumption = Assumption.objects.get(report=pk)
-            serializer = AssumptionSerializer(assumption)
+            assumption = Assumption.objects.filter(report=pk)
+            serializer = AssumptionSerializer(assumption, many=True)
             return Response(serializer.data)
         except Assumption.DoesNotExist:
             return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = AssumptionSerializer(data=request.data)
+        serializer = AssumptionSerializer(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -552,14 +552,14 @@ class DependencyViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             
-            dependency = Dependency.objects.get(report=pk)
-            serializer = DependencySerializer(dependency)
+            dependency = Dependency.objects.filter(report=pk)
+            serializer = DependencySerializer(dependency, many = True)
             return Response(serializer.data)
         except Dependency.DoesNotExist:
             return Response({"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        serializer = DependencySerializer(data=request.data)
+        serializer = DependencySerializer(data=request.data, many = True)
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
