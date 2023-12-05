@@ -131,7 +131,7 @@ class ProjectManagerUserListView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        project_manager_list = User.objects.filter(user_type="Project_manager")
+        project_manager_list = User.objects.filter(user_type="Project Manager")
         serializer = UserListSerializer(project_manager_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

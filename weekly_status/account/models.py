@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     user_choice = (
         ("Admin", "Admin"),
-        ("Project_manager", "Project Manager"),
+        ("Project Manager", "Project Manager"),
         ("Management", "Management"),
     )
     user_type = models.CharField(max_length=20, choices=user_choice)
