@@ -58,6 +58,13 @@ class ProjectDetailViewSet(viewsets.ViewSet):
         except Project.DoesNotExist:
             return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+class ProjectListViewSet(viewsets.ViewSet):
+    renderer_classes = [ProjectPlanRenderer]
+    def retrieve(self, request, pk=None):
+        proj = Project.objects.filter(user_id=pk)
+        serializer = ProjectSerializer(proj, many=True)
+        return Response(serializer.data)
+
 class WeeklyReportViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
     def list(self, request):

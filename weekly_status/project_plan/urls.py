@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register("projectsapi", views.ProjectDetailViewSet, basename="projects")
+router.register("projectslistapi", views.ProjectListViewSet, basename="projectslist")
 router.register("weeklyreportapi", views.WeeklyReportViewSet, basename="weeklyreport")
 router.register("projectstatusapi", views.ProjectStatusViewSet, basename="projectstatus")
 router.register("phasewisetimelineapi", views.PhaseWiseTimelineViewSet, basename="phasewisetimeline")
