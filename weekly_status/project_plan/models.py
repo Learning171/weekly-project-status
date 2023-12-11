@@ -2,6 +2,7 @@ from django.db import models
 
 from account.models import *
 
+
 # Create your models here.
 class Project(models.Model):
     project_name = models.CharField(max_length=100, unique=True)
@@ -15,7 +16,7 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         self.manager_name = self.user.user_name
         super(Project, self).save(*args, **kwargs)
-    
+
 
 class WeeklyReport(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -29,14 +30,14 @@ class WeeklyReport(models.Model):
 
 
 class ProjectStatus(models.Model):
-    color_choice = (
-        ('R', 'Red'),
-        ('A', 'Amber'),
-        ('G', 'Green')
-    )
+    color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     report = models.OneToOneField(WeeklyReport, on_delete=models.CASCADE)
-    overall_last_week = models.CharField(max_length=2, choices=color_choice, default="Gr")
-    overall_this_week = models.CharField(max_length=2, choices=color_choice, default="Gr")
+    overall_last_week = models.CharField(
+        max_length=2, choices=color_choice, default="Gr"
+    )
+    overall_this_week = models.CharField(
+        max_length=2, choices=color_choice, default="Gr"
+    )
     scope = models.CharField(max_length=2, choices=color_choice, default="Gr")
     schedule = models.CharField(max_length=2, choices=color_choice, default="Gr")
     cost = models.CharField(max_length=2, choices=color_choice, default="Gr")
@@ -56,37 +57,33 @@ class PhaseWiseTimeline(models.Model):
         self.timeline_title = f"timeline-{self.report.title}"
         super(PhaseWiseTimeline, self).save(*args, **kwargs)
 
-    
+
 class Phase(models.Model):
     timeline = models.ForeignKey(PhaseWiseTimeline, on_delete=models.CASCADE)
     phase_name = models.CharField(max_length=20)
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
     revised_end_date = models.DateField()
-    color_choice = (
-        ('R', 'Red'),
-        ('A', 'Amber'),
-        ('G', 'Green')
-    )
+    color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     status = models.CharField(max_length=10, choices=color_choice, default="Gr")
     remark = models.TextField()
 
 
 class TaskToDo(models.Model):
-    report = models.ForeignKey(WeeklyReport,on_delete=models.CASCADE,null=False)
+    report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE, null=False)
     description = models.TextField()
     assignee = models.CharField(max_length=50)
 
 
 class Accomplishment(models.Model):
-    report = models.ForeignKey(WeeklyReport,on_delete=models.CASCADE,null=False)
+    report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE, null=False)
     Description = models.TextField()
 
 
 class Assumption(models.Model):
     report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
     assumption = models.TextField()
-    
+
 
 class Risk(models.Model):
     report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
@@ -95,13 +92,9 @@ class Risk(models.Model):
     complexity = models.CharField(max_length=200)
     impact = models.CharField(max_length=200)
     mitigation_plan = models.CharField(max_length=200)
-    color_choice = (
-        ('R', 'Red'),
-        ('A', 'Amber'),
-        ('G', 'Green')
-    )
+    color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     RAGStatus = models.CharField(max_length=6, choices=color_choice)
-     
+
 
 class Issue(models.Model):
     report = models.ForeignKey(WeeklyReport, on_delete=models.CASCADE)
@@ -110,11 +103,7 @@ class Issue(models.Model):
     complexity = models.CharField(max_length=200)
     impact = models.CharField(max_length=200)
     responsible_party = models.CharField(max_length=200)
-    color_choice = (
-        ('R', 'Red'),
-        ('A', 'Amber'),
-        ('G', 'Green')
-    )
+    color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     RAGStatus = models.CharField(max_length=6, choices=color_choice)
 
 
@@ -123,9 +112,5 @@ class Dependency(models.Model):
     dependency_description = models.CharField(max_length=200)
     target_completion_date = models.DateField()
     responsible_party = models.CharField(max_length=200)
-    color_choice = (
-        ('R', 'Red'),
-        ('A', 'Amber'),
-        ('G', 'Green')
-    )
+    color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     RAGStatus = models.CharField(max_length=6, choices=color_choice)

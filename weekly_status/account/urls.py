@@ -22,8 +22,20 @@ urlpatterns = [
     path("profileid/<int:pk>/", UserProfileIdView.as_view(), name="profile"),
     path("adminlist/", AdminUserListView.as_view(), name="adminlist"),
     path("managementlist/", ManagementUserListView.as_view(), name="managementlist"),
-    path("projectmanagerlist/", ProjectManagerUserListView.as_view(), name="projectmanagerlist"),
+    path(
+        "projectmanagerlist/",
+        ProjectManagerUserListView.as_view(),
+        name="projectmanagerlist",
+    ),
     path("changepassword/", UserChangePasswordView.as_view(), name="changepassword"),
-    path("send-reset-password-email/",SendPasswordResetEmailView.as_view(),name="send-reset-password-email",),
-    path("reset-password/<uid>/<token>/",UserPasswordResetView.as_view(),name="reset-password",),
+    path(
+        "send-reset-password-email/",
+        SendPasswordResetEmailView.as_view(),
+        name="send-reset-password-email",
+    ),
+    path(
+        "reset-password/<uid>/<token>/",
+        UserPasswordResetView.as_view(),
+        name="reset-password",
+    ),
 ]

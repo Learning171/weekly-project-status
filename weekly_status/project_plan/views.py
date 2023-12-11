@@ -1,13 +1,14 @@
-from rest_framework.response import Response
 from .models import *
 from .serializers import *
+from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from project_plan.renderers import ProjectPlanRenderer
-from django.shortcuts import get_object_or_404
-    
+
+
 class ProjectDetailViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         proj = Project.objects.filter(user_id=request.user.id)
         serializer = ProjectSerializer(proj, many=True)
@@ -19,13 +20,18 @@ class ProjectDetailViewSet(viewsets.ViewSet):
             serializer = ProjectSerializer(proj)
             return Response(serializer.data)
         except Project.DoesNotExist:
-            return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -34,10 +40,14 @@ class ProjectDetailViewSet(viewsets.ViewSet):
             serializer = ProjectSerializer(proj, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Project.DoesNotExist:
-            return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -45,10 +55,14 @@ class ProjectDetailViewSet(viewsets.ViewSet):
             serializer = ProjectSerializer(proj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Project.DoesNotExist:
-            return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -56,17 +70,23 @@ class ProjectDetailViewSet(viewsets.ViewSet):
             proj.delete()
             return Response({"msg": "Deletion Successful"})
         except Project.DoesNotExist:
-            return Response({"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class ProjectListViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def retrieve(self, request, pk=None):
         proj = Project.objects.filter(user_id=pk)
         serializer = ProjectSerializer(proj, many=True)
         return Response(serializer.data)
 
+
 class WeeklyReportViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         user_projects = Project.objects.filter(user_id=request.user.id)
         user_projects_ids = [project.id for project in user_projects]
@@ -80,14 +100,19 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             serializer = WeeklyReportSerializer(report)
             return Response(serializer.data)
         except WeeklyReport.DoesNotExist:
-            return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response(
+                {"error": "Weekly Report does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def create(self, request):
         serializer = WeeklyReportSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -96,10 +121,15 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             serializer = WeeklyReportSerializer(report, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except WeeklyReport.DoesNotExist:
-            return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Weekly Report does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -107,10 +137,15 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             serializer = WeeklyReportSerializer(report, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except WeeklyReport.DoesNotExist:
-            return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Weekly Report does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -118,16 +153,22 @@ class WeeklyReportViewSet(viewsets.ViewSet):
             report.delete()
             return Response({"msg": "Deletion Successful"})
         except WeeklyReport.DoesNotExist:
-            return Response({"error": "Weekly Report does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Weekly Report does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 
 class ProjectWeeklyReportView(APIView):
     def get(self, request, project_id):
-        reports =  WeeklyReport.objects.filter(project_id=project_id)
+        reports = WeeklyReport.objects.filter(project_id=project_id)
         weeklyreportserializer = WeeklyReportSerializer(reports, many=True)
         return Response(weeklyreportserializer.data, status=status.HTTP_200_OK)
 
+
 class ProjectStatusViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         projstatus = ProjectStatus.objects.all()
         serializer = ProjectStatusSerializer(projstatus, many=True)
@@ -135,18 +176,23 @@ class ProjectStatusViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-           
             projstatus = ProjectStatus.objects.get(report=pk)
             serializer = ProjectStatusSerializer(projstatus)
             return Response(serializer.data)
         except ProjectStatus.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def create(self, request):
         serializer = ProjectStatusSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -155,21 +201,33 @@ class ProjectStatusViewSet(viewsets.ViewSet):
             serializer = ProjectStatusSerializer(projstatus, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ProjectStatus.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def partial_update(self, request, pk=None):
         try:
             projstatus = ProjectStatus.objects.get(pk=pk)
-            serializer = ProjectStatusSerializer(projstatus, data=request.data, partial=True)
+            serializer = ProjectStatusSerializer(
+                projstatus, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ProjectStatus.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -177,10 +235,15 @@ class ProjectStatusViewSet(viewsets.ViewSet):
             projstatus.delete()
             return Response({"msg": "Deletion Successful"})
         except ProjectStatus.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 
 class PhaseWiseTimelineViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         phasetimeline = PhaseWiseTimeline.objects.all()
         serializer = PhaseWiseTimelineSerializer(phasetimeline, many=True)
@@ -188,18 +251,23 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-           
             phasetimeline = PhaseWiseTimeline.objects.get(report=pk)
             serializer = PhaseWiseTimelineSerializer(phasetimeline)
             return Response(serializer.data)
         except PhaseWiseTimeline.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def create(self, request):
         serializer = PhaseWiseTimelineSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -208,21 +276,33 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
             serializer = PhaseWiseTimelineSerializer(phasetimeline, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PhaseWiseTimeline.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def partial_update(self, request, pk=None):
         try:
             phasetimeline = PhaseWiseTimeline.objects.get(pk=pk)
-            serializer = PhaseWiseTimelineSerializer(phasetimeline, data=request.data, partial=True)
+            serializer = PhaseWiseTimelineSerializer(
+                phasetimeline, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PhaseWiseTimeline.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -230,10 +310,15 @@ class PhaseWiseTimelineViewSet(viewsets.ViewSet):
             phasetimeline.delete()
             return Response({"msg": "Deletion Successful"})
         except PhaseWiseTimeline.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class PhaseViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         phasetimeline = Phase.objects.all()
         serializer = PhaseSerializer(phasetimeline, many=True)
@@ -241,18 +326,23 @@ class PhaseViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-           
             phasetimeline = Phase.objects.filter(timeline_id=pk)
             serializer = PhaseSerializer(phasetimeline, many=True)
             return Response(serializer.data)
         except Phase.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def create(self, request):
         serializer = PhaseSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -261,10 +351,15 @@ class PhaseViewSet(viewsets.ViewSet):
             serializer = PhaseSerializer(phasetimeline, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Phase.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -272,10 +367,15 @@ class PhaseViewSet(viewsets.ViewSet):
             serializer = PhaseSerializer(phasetimeline, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Phase.DoesNotExist:
-            return Response({"error": "Phase Wise Timeline does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Phase Wise Timeline does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -283,10 +383,15 @@ class PhaseViewSet(viewsets.ViewSet):
             phasetimeline.delete()
             return Response({"msg": "Deletion Successful"})
         except Phase.DoesNotExist:
-            return Response({"error": "Project Status does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Project Status does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 
 class TaskToDoViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         todo = TaskToDo.objects.all()
         serializer = TaskToDoSerializers(todo, many=True)
@@ -295,16 +400,21 @@ class TaskToDoViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             todo = TaskToDo.objects.filter(report=pk)
-            serializer = TaskToDoSerializers(todo, many = True)
+            serializer = TaskToDoSerializers(todo, many=True)
             return Response(serializer.data)
         except TaskToDo.DoesNotExist:
-            return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
-        serializer = TaskToDoSerializers(data=request.data, many = True)
+        serializer = TaskToDoSerializers(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -313,10 +423,14 @@ class TaskToDoViewSet(viewsets.ViewSet):
             serializer = TaskToDoSerializers(todo, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except TaskToDo.DoesNotExist:
-            return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -324,10 +438,14 @@ class TaskToDoViewSet(viewsets.ViewSet):
             serializer = TaskToDoSerializers(todo, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except TaskToDo.DoesNotExist:
-            return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -335,10 +453,14 @@ class TaskToDoViewSet(viewsets.ViewSet):
             todo.delete()
             return Response({"msg": "Deletion Successful"})
         except TaskToDo.DoesNotExist:
-            return Response({"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Task To Do does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class AccomplishmentViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         accomplishment = Accomplishment.objects.all()
         serializer = AccomplishmentSerializers(accomplishment, many=True)
@@ -346,18 +468,23 @@ class AccomplishmentViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            
             accomplishment = Accomplishment.objects.filter(report=pk)
-            serializer = AccomplishmentSerializers(accomplishment, many = True)
+            serializer = AccomplishmentSerializers(accomplishment, many=True)
             return Response(serializer.data)
         except Accomplishment.DoesNotExist:
-            return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Accomplishment does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def create(self, request):
-        serializer = AccomplishmentSerializers(data=request.data, many = True)
+        serializer = AccomplishmentSerializers(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -366,21 +493,33 @@ class AccomplishmentViewSet(viewsets.ViewSet):
             serializer = AccomplishmentSerializers(accomplishment, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Accomplishment.DoesNotExist:
-            return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Accomplishment does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def partial_update(self, request, pk=None):
         try:
             accomplishment = Accomplishment.objects.get(pk=pk)
-            serializer = AccomplishmentSerializers(accomplishment, data=request.data, partial=True)
+            serializer = AccomplishmentSerializers(
+                accomplishment, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Accomplishment.DoesNotExist:
-            return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Accomplishment does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -388,10 +527,15 @@ class AccomplishmentViewSet(viewsets.ViewSet):
             accomplishment.delete()
             return Response({"msg": "Deletion Successful"})
         except Accomplishment.DoesNotExist:
-            return Response({"error": "Accomplishment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Accomplishment does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 
 class RiskViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         risk = Risk.objects.all()
         serializer = RiskSerializer(risk, many=True)
@@ -399,18 +543,22 @@ class RiskViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-           
             risk = Risk.objects.filter(report=pk)
-            serializer = RiskSerializer(risk, many = True)
+            serializer = RiskSerializer(risk, many=True)
             return Response(serializer.data)
         except Risk.DoesNotExist:
-            return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
-        serializer = RiskSerializer(data=request.data, many = True)
+        serializer = RiskSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -419,10 +567,14 @@ class RiskViewSet(viewsets.ViewSet):
             serializer = RiskSerializer(risk, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Risk.DoesNotExist:
-            return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -430,10 +582,14 @@ class RiskViewSet(viewsets.ViewSet):
             serializer = RiskSerializer(risk, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Risk.DoesNotExist:
-            return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -441,10 +597,14 @@ class RiskViewSet(viewsets.ViewSet):
             risk.delete()
             return Response({"msg": "Deletion Successful"})
         except Risk.DoesNotExist:
-            return Response({"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Risk does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class IssueViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         issue = Issue.objects.all()
         serializer = IssueSerializer(issue, many=True)
@@ -452,18 +612,22 @@ class IssueViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            
             issue = Issue.objects.filter(report=pk)
-            serializer = IssueSerializer(issue, many = True)
+            serializer = IssueSerializer(issue, many=True)
             return Response(serializer.data)
         except Issue.DoesNotExist:
-            return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
-        serializer = IssueSerializer(data=request.data, many = True)
+        serializer = IssueSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -472,10 +636,14 @@ class IssueViewSet(viewsets.ViewSet):
             serializer = IssueSerializer(issue, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Issue.DoesNotExist:
-            return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
@@ -483,10 +651,14 @@ class IssueViewSet(viewsets.ViewSet):
             serializer = IssueSerializer(issue, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Issue.DoesNotExist:
-            return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -494,10 +666,14 @@ class IssueViewSet(viewsets.ViewSet):
             issue.delete()
             return Response({"msg": "Deletion Successful"})
         except Issue.DoesNotExist:
-            return Response({"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Issue does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class AssumptionViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         assumption = Assumption.objects.all()
         serializer = AssumptionSerializer(assumption, many=True)
@@ -505,18 +681,22 @@ class AssumptionViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            
             assumption = Assumption.objects.filter(report=pk)
             serializer = AssumptionSerializer(assumption, many=True)
             return Response(serializer.data)
         except Assumption.DoesNotExist:
-            return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
-        serializer = AssumptionSerializer(data=request.data, many = True)
+        serializer = AssumptionSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -525,21 +705,31 @@ class AssumptionViewSet(viewsets.ViewSet):
             serializer = AssumptionSerializer(assumption, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Assumption.DoesNotExist:
-            return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
             assumption = Assumption.objects.get(pk=pk)
-            serializer = AssumptionSerializer(assumption, data=request.data, partial=True)
+            serializer = AssumptionSerializer(
+                assumption, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Assumption.DoesNotExist:
-            return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -547,10 +737,14 @@ class AssumptionViewSet(viewsets.ViewSet):
             assumption.delete()
             return Response({"msg": "Deletion Successful"})
         except Assumption.DoesNotExist:
-            return Response({"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Assumption does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class DependencyViewSet(viewsets.ViewSet):
     renderer_classes = [ProjectPlanRenderer]
+
     def list(self, request):
         dependency = Dependency.objects.all()
         serializer = DependencySerializer(dependency, many=True)
@@ -558,18 +752,22 @@ class DependencyViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            
             dependency = Dependency.objects.filter(report=pk)
-            serializer = DependencySerializer(dependency, many = True)
+            serializer = DependencySerializer(dependency, many=True)
             return Response(serializer.data)
         except Dependency.DoesNotExist:
-            return Response({"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def create(self, request):
-        serializer = DependencySerializer(data=request.data, many = True)
+        serializer = DependencySerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Data Created", "Data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
@@ -578,21 +776,31 @@ class DependencyViewSet(viewsets.ViewSet):
             serializer = DependencySerializer(dependency, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Complete update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Complete update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Dependency.DoesNotExist:
-            return Response({"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def partial_update(self, request, pk=None):
         try:
             dependency = Dependency.objects.get(pk=pk)
-            serializer = DependencySerializer(dependency, data=request.data, partial=True)
+            serializer = DependencySerializer(
+                dependency, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
-                return Response({"msg": "Partial update Successful"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "Partial update Successful"}, status=status.HTTP_200_OK
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Dependency.DoesNotExist:
-            return Response({"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def destroy(self, request, pk=None):
         try:
@@ -600,4 +808,6 @@ class DependencyViewSet(viewsets.ViewSet):
             dependency.delete()
             return Response({"msg": "Deletion Successful"})
         except Dependency.DoesNotExist:
-            return Response({"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Dependency does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
