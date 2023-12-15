@@ -63,7 +63,7 @@ class Phase(models.Model):
     phase_name = models.CharField(max_length=20)
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
-    revised_end_date = models.DateField()
+    revised_end_date = models.DateField(blank=True)
     color_choice = (("R", "Red"), ("A", "Amber"), ("G", "Green"))
     status = models.CharField(max_length=10, choices=color_choice, default="Gr")
     remark = models.TextField()
